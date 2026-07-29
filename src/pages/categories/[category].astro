@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostTimeline from "../../components/PostTimeline.astro";
+import { CATEGORIES } from "../../config/taxonomy";
+import { getPublishedPosts } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = getPublishedPosts(await getCollection("blog"));
+  return CATEGORIES.map((category) => ({
+    params: { category: category.slug },
+    props: {
+      category,
+      posts: posts.filter((post) => post.data.category === category.name)
+    }
+  }));
+}
+
+const { category, posts } = Astro.props;
+---
+
+<BaseLayout title={category.name} description={`${category.name}分类下的文章。`}>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Category</span>
+      <h1>{category.name}</h1>
+      <p>{posts.length} 篇正式文章。</p>
+    </div>
+  </header>
+  <PostTimeline posts={posts} />
+</BaseLayout>

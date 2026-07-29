@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="搜索" description="搜索博客文章。">
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Search</span>
+      <h1>搜索文章</h1>
+      <p>可搜索标题、摘要、标签和正文。</p>
+    </div>
+  </header>
+  <div id="search" aria-live="polite">
+    <p class="search-loading">搜索索引会在构建后加载。本地开发时请先运行 npm run build。</p>
+  </div>
+</BaseLayout>
+
+<script type="module" is:inline>
+  const container = document.querySelector("#search");
+  try {
+    const { PagefindUI } = await import("/pagefind/pagefind-ui.js");
+    container.innerHTML = "";
+    new PagefindUI({
+      element: "#search",
+      showSubResults: true,
+      translations: {
+        placeholder: "输入关键词",
+        clear_search: "清除",
+        load_more: "加载更多",
+        search_label: "搜索本站",
+        filters_label: "筛选",
+        zero_results: "没有找到 [SEARCH_TERM] 的相关内容",
+        many_results: "找到 [COUNT] 条关于 [SEARCH_TERM] 的结果",
+        one_result: "找到 1 条关于 [SEARCH_TERM] 的结果",
+        alt_search: "没有找到 [SEARCH_TERM]，显示 [DIFFERENT_TERM] 的结果",
+        search_suggestion: "没有找到 [SEARCH_TERM]，可以尝试：",
+        searching: "正在搜索 [SEARCH_TERM]…"
+      }
+    });
+  } catch {
+    container?.classList.add("search-unavailable");
+  }
+</script>
+
+<style is:global>
+  #search {
+    --pagefind-ui-scale: 0.85;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--surface);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--surface-muted);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-font: var(--font-ui);
+  }
+
+  .search-loading {
+    color: var(--text-muted);
+  }
+</style>

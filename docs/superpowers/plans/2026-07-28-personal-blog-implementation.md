@@ -34,7 +34,7 @@ src/pages/index.astro
 
 实施内容：
 
-- 固定 Node.js 24 LTS。
+- 固定本机现有且满足 Astro 要求的 Node.js 22.14。
 - 使用 npm 管理依赖并提交 `package-lock.json`。
 - 安装 Astro、TypeScript、`@astrojs/check`、Vitest、RSS、sitemap 和静态搜索所需依赖。
 - 配置 TypeScript `strict` 模式。
@@ -694,7 +694,7 @@ README.md
 包含：
 
 - 博客用途和技术组成。
-- Node.js 24、Git、VS Code 的安装入口。
+- Node.js 22.12 或更高受支持版本、Git、VS Code 的安装入口。
 - 首次安装和启动命令。
 - 常用目录说明。
 - 日常只需掌握的四个 npm 命令。
@@ -805,7 +805,7 @@ docs/cloudflare-deployment.md
 5. 选择 `main` 为生产分支。
 6. 设置构建命令 `npm run build`。
 7. 设置输出目录 `dist`。
-8. 固定 Node.js 24。
+8. 固定 Node.js 22.14。
 9. 触发首次构建。
 10. 访问 `pages.dev` 地址。
 11. 创建测试分支并确认预览部署。

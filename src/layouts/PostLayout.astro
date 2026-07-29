@@ -1,0 +1,97 @@
+---
+import type { BlogEntry } from "../types/blog";
+import BaseLayout from "./BaseLayout.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import PostNavigation from "../components/PostNavigation.astro";
+import {
+  formatPostDate
+} from "../lib/posts";
+import { getCategorySlug, taxonomySlug } from "../config/taxonomy";
+import "../styles/content.css";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  post: BlogEntry;
+  headings: Heading[];
+  previous?: BlogEntry;
+  next?: BlogEntry;
+}
+
+const { post, headings, previous, next } = Astro.props;
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article>
+    <header class="post-header">
+      <span class="eyebrow">{post.data.category}</span>
+      <h1>{post.data.title}</h1>
+      <p class="description">{post.data.description}</p>
+      <div class="post-meta">
+        <time datetime={post.data.publishedAt.toISOString()}>
+          发布于 {formatPostDate(post.data.publishedAt)}
+        </time>
+        {post.data.updatedAt && (
+          <time datetime={post.data.updatedAt.toISOString()}>
+            更新于 {formatPostDate(post.data.updatedAt)}
+          </time>
+        )}
+      </div>
+      <div class="taxonomies">
+        <a class="pill" href={`/categories/${getCategorySlug(post.data.category)}/`}>
+          {post.data.category}
+        </a>
+        {post.data.tags.map((tag) => (
+          <a class="pill" href={`/tags/${taxonomySlug(tag, "tag")}/`}>#{tag}</a>
+        ))}
+        {post.data.series && (
+          <a class="pill" href={`/series/${taxonomySlug(post.data.series, "series")}/`}>
+            系列：{post.data.series}
+          </a>
+        )}
+      </div>
+    </header>
+    <TableOfContents headings={headings} />
+    <div class="prose"><slot /></div>
+    <PostNavigation previous={previous} next={next} />
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  h1 {
+    margin: 0 0 0.8rem;
+    font: 500 clamp(2rem, 5vw, 3rem) / 1.3 var(--font-reading);
+    letter-spacing: -0.03em;
+  }
+
+  .description {
+    max-width: 42rem;
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    color: var(--text-faint);
+    font-size: 0.75rem;
+  }
+
+  .taxonomies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+</style>

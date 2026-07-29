@@ -1,0 +1,120 @@
+---
+import { SITE } from "../config/site";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<header class="mobile-header">
+  <a class="mobile-brand" href="/">{SITE.title}</a>
+  <div class="mobile-actions">
+    <ThemeToggle />
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">
+      <span class="sr-only">打开导航</span>
+      <span aria-hidden="true">☰</span>
+    </button>
+  </div>
+  <nav id="mobile-nav" aria-label="移动端导航" hidden>
+    {SITE.nav.map((item) => (
+      <a class:list={{ active: currentPath.startsWith(item.href) }} href={item.href}>
+        {item.label}
+      </a>
+    ))}
+    <a href="/search/">搜索</a>
+  </nav>
+</header>
+
+<script>
+  const menuButton = document.querySelector<HTMLButtonElement>(".menu-button");
+  const mobileNav = document.querySelector<HTMLElement>("#mobile-nav");
+  menuButton?.addEventListener("click", () => {
+    if (!mobileNav) return;
+    const open = menuButton.getAttribute("aria-expanded") === "true";
+    menuButton.setAttribute("aria-expanded", String(!open));
+    mobileNav.hidden = open;
+  });
+</script>
+
+<style>
+  .mobile-header {
+    display: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  @media (max-width: 760px) {
+    .mobile-header {
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 4rem;
+      padding: 0.75rem 1.15rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-muted);
+    }
+
+    .mobile-brand {
+      font: 500 1.15rem var(--font-reading);
+      text-decoration: none;
+    }
+
+    .mobile-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .menu-button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    nav {
+      display: grid;
+      position: absolute;
+      z-index: 10;
+      top: calc(100% + 0.5rem);
+      right: 1rem;
+      min-width: 10rem;
+      padding: 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 0.7rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    nav[hidden] {
+      display: none;
+    }
+
+    nav a {
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.45rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+  }
+</style>

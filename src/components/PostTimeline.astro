@@ -1,0 +1,48 @@
+---
+import type { BlogEntry } from "../types/blog";
+import { groupPostsByMonth } from "../lib/posts";
+import PostTimelineItem from "./PostTimelineItem.astro";
+
+interface Props {
+  posts: BlogEntry[];
+}
+
+const { posts } = Astro.props;
+const groups = groupPostsByMonth(posts);
+---
+
+{groups.length === 0 ? (
+  <section class="empty-state">
+    <h2>等待第一篇正式文章</h2>
+    <p>草稿可以随时保存；准备好后将 draft 改为 false 即可发布。</p>
+  </section>
+) : (
+  <div class="timeline">
+    {groups.map((group, groupIndex) => (
+      <section aria-labelledby={`month-${group.key}`}>
+        <h2 id={`month-${group.key}`}>{group.label}</h2>
+        {group.posts.map((post, postIndex) => (
+          <PostTimelineItem
+            post={post}
+            last={
+              groupIndex === groups.length - 1 &&
+              postIndex === group.posts.length - 1
+            }
+          />
+        ))}
+      </section>
+    ))}
+  </div>
+)}
+
+<style>
+  .timeline section > h2 {
+    margin: 1.75rem 0 1.2rem;
+    color: var(--accent);
+    font: 500 0.92rem var(--font-reading);
+  }
+
+  .timeline section:first-child > h2 {
+    margin-top: 0;
+  }
+</style>

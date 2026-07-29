@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="页面不存在" description="没有找到这个页面。" noindex>
+  <section class="not-found">
+    <span class="eyebrow">404</span>
+    <h1>这里没有留下记录</h1>
+    <p>链接可能已经变化，也可能只是输入有误。</p>
+    <div>
+      <a class="primary" href="/">返回首页</a>
+      <a href="/search/">搜索文章</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 15vh 0;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0.3rem 0;
+    font: 500 clamp(2rem, 5vw, 3rem) var(--font-reading);
+  }
+
+  p {
+    color: var(--text-muted);
+  }
+
+  .not-found div {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .not-found a {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    text-decoration: none;
+  }
+
+  .not-found a.primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--surface);
+  }
+</style>

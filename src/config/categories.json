@@ -1,0 +1,6 @@
+[
+  { "name": "技术实践", "slug": "tech" },
+  { "name": "阅读笔记", "slug": "reading" },
+  { "name": "生活观察", "slug": "life" },
+  { "name": "思考随笔", "slug": "thoughts" }
+]

@@ -1,0 +1,79 @@
+.prose {
+  color: var(--text);
+  font-family: var(--font-reading);
+  font-size: clamp(1.02rem, 1.2vw, 1.12rem);
+  line-height: 1.95;
+}
+
+.prose > * {
+  max-width: 100%;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  scroll-margin-top: 2rem;
+  line-height: 1.4;
+}
+
+.prose h2 {
+  margin: 2.5em 0 0.8em;
+  font-size: 1.55em;
+}
+
+.prose h3 {
+  margin: 2em 0 0.7em;
+  font-size: 1.25em;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote {
+  margin: 1.25em 0;
+}
+
+.prose blockquote {
+  padding: 0.2rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--text-muted);
+}
+
+.prose code {
+  padding: 0.12em 0.35em;
+  border-radius: 0.3rem;
+  background: var(--surface-muted);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 0.75rem;
+}
+
+.prose pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.prose img {
+  display: block;
+  margin: 2rem auto;
+  border-radius: 0.7rem;
+}
+
+.prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.prose th,
+.prose td {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+}

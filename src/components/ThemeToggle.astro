@@ -1,0 +1,44 @@
+<button
+  class="theme-toggle"
+  type="button"
+  aria-label="切换明暗主题"
+  title="切换明暗主题"
+>
+  <span aria-hidden="true">◐</span>
+</button>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".theme-toggle");
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      const root = document.documentElement;
+      const currentlyDark =
+        root.dataset.theme === "dark" ||
+        (!root.dataset.theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+      const next = currentlyDark ? "light" : "dark";
+      root.dataset.theme = next;
+      localStorage.setItem("theme", next);
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

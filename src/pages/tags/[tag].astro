@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostTimeline from "../../components/PostTimeline.astro";
+import {
+  getAllTags,
+  getPublishedPosts
+} from "../../lib/posts";
+import { taxonomySlug } from "../../config/taxonomy";
+
+export async function getStaticPaths() {
+  const posts = getPublishedPosts(await getCollection("blog"));
+  return getAllTags(posts).map((tag) => ({
+    params: { tag: tag.slug },
+    props: {
+      tag,
+      posts: posts.filter((post) =>
+        post.data.tags.some((name) => taxonomySlug(name, "tag") === tag.slug)
+      )
+    }
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`标签：${tag.name}`} description={`带有${tag.name}标签的文章。`}>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Tag</span>
+      <h1>#{tag.name}</h1>
+      <p>{posts.length} 篇正式文章。</p>
+    </div>
+  </header>
+  <PostTimeline posts={posts} />
+</BaseLayout>

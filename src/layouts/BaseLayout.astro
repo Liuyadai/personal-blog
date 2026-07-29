@@ -1,0 +1,68 @@
+---
+import { getCollection } from "astro:content";
+import { SITE } from "../config/site";
+import { daysSinceLatestPost } from "../lib/posts";
+import Sidebar from "../components/Sidebar.astro";
+import MobileHeader from "../components/MobileHeader.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.description,
+  noindex = false
+} = Astro.props;
+const documentTitle = title ? `${title} · ${SITE.title}` : SITE.title;
+const canonical = new URL(Astro.url.pathname, SITE.url);
+const allPosts = await getCollection("blog");
+const latestDays = daysSinceLatestPost(allPosts);
+---
+
+<!doctype html>
+<html lang={SITE.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <title>{documentTitle}</title>
+    <slot name="head" />
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <div class="site-shell">
+      <Sidebar currentPath={Astro.url.pathname} latestDays={latestDays} />
+      <MobileHeader currentPath={Astro.url.pathname} />
+      <main id="main-content" class="page-content" data-pagefind-body>
+        <div class="page-inner">
+          <slot />
+          <footer class="footer">
+            <span>© {new Date().getFullYear()} {SITE.author}</span>
+            <span> · 内容由 Markdown 与 Git 长期保存</span>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

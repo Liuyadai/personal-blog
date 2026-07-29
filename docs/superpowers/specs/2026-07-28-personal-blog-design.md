@@ -48,7 +48,7 @@
 - Astro 支持逐步加入组件与自定义页面，兼顾长期可控和后续定制。
 - Cloudflare Pages 可连接 GitHub，在推送后自动构建并提供分支预览。
 
-运行环境固定使用 Node.js 24 LTS，并通过 `.node-version`、`package.json` 的 `engines` 字段和依赖锁文件保持本地与云端一致。
+运行环境固定使用本机现有且满足 Astro 要求的 Node.js 22.14，并通过 `.node-version`、`package.json` 的 `engines` 字段和依赖锁文件保持本地与云端一致。
 
 ## 3. 项目结构
 
@@ -283,7 +283,7 @@ git push
 - GitHub 仓库默认设为私有。
 - Cloudflare Pages 通过 GitHub 集成读取仓库。
 - `main` 分支用于正式环境，其他分支用于预览。
-- Cloudflare 使用与本地一致的 Node.js 24 LTS。
+- Cloudflare 使用与本地一致的 Node.js 22.14。
 - 正式域名从首次上线开始使用；更换托管平台时保持域名和 URL 不变。
 
 ### 10.2 故障处理

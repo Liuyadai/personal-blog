@@ -1,0 +1,150 @@
+---
+import { SITE } from "../config/site";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  currentPath: string;
+  latestDays: number | null;
+}
+
+const { currentPath, latestDays } = Astro.props;
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+---
+
+<aside class="sidebar">
+  <div>
+    <a class="identity" href="/" aria-label={`${SITE.title}首页`}>
+      <span class="avatar" aria-hidden="true">见</span>
+      <span class="site-name">{SITE.title}</span>
+    </a>
+    <p class="bio">{SITE.description}</p>
+
+    <nav aria-label="主要导航">
+      <ul>
+        {SITE.nav.map((item) => (
+          <li>
+            <a class:list={{ active: isActive(item.href) }} href={item.href}>
+              <span aria-hidden="true"></span>{item.label}
+            </a>
+          </li>
+        ))}
+        <li><a class:list={{ active: currentPath.startsWith("/search") }} href="/search/">搜索</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="last-published">
+      <span>上次记录</span>
+      <strong>
+        {latestDays === null
+          ? "等待第一篇"
+          : latestDays === 0
+            ? "就在今天"
+            : `${latestDays} 天前`}
+      </strong>
+    </div>
+    <ThemeToggle />
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    display: flex;
+    position: sticky;
+    top: 1rem;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 2rem);
+    padding: 2.25rem 1.8rem 1.6rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface-muted);
+  }
+
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .avatar {
+    display: grid;
+    width: 2.8rem;
+    height: 2.8rem;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c7a985, #6f5845);
+    color: #fffaf2;
+    font: 500 1.2rem var(--font-reading);
+  }
+
+  .site-name {
+    font: 500 1.25rem var(--font-reading);
+  }
+
+  .bio {
+    margin: 1rem 0 2rem;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin: 0.28rem 0;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.48rem 0;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    text-decoration: none;
+  }
+
+  nav a.active {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  nav a.active span {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .sidebar-bottom {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .last-published span {
+    display: block;
+    color: var(--text-faint);
+    font-size: 0.7rem;
+  }
+
+  .last-published strong {
+    font: 500 0.88rem var(--font-reading);
+  }
+
+  @media (max-width: 760px) {
+    .sidebar {
+      display: none;
+    }
+  }
+</style>

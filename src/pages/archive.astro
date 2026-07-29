@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostTimeline from "../components/PostTimeline.astro";
+import { getPublishedPosts } from "../lib/posts";
+
+const posts = getPublishedPosts(await getCollection("blog"));
+---
+
+<BaseLayout title="归档" description="按时间查看全部已发布文章。">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Archive</span>
+      <h1>写作归档</h1>
+      <p>共 {posts.length} 篇正式文章。</p>
+    </div>
+  </header>
+  <PostTimeline posts={posts} />
+</BaseLayout>

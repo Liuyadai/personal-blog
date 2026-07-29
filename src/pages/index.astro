@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostTimeline from "../components/PostTimeline.astro";
+import { getHomePosts } from "../lib/posts";
+
+const posts = getHomePosts(await getCollection("blog"));
+---
+
+<BaseLayout>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Latest notes</span>
+      <h1>最近写下的</h1>
+      <p>沿着时间，重新看见当时的自己。</p>
+    </div>
+    <a class="archive-link" href="/archive/">完整归档 →</a>
+  </header>
+  <PostTimeline posts={posts} />
+</BaseLayout>
+
+<style>
+  .archive-link {
+    flex: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+</style>

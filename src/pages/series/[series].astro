@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostTimeline from "../../components/PostTimeline.astro";
+import {
+  getAllSeries,
+  getPublishedPosts
+} from "../../lib/posts";
+import { taxonomySlug } from "../../config/taxonomy";
+
+export async function getStaticPaths() {
+  const posts = getPublishedPosts(await getCollection("blog"));
+  return getAllSeries(posts).map((series) => ({
+    params: { series: series.slug },
+    props: {
+      series,
+      posts: posts.filter(
+        (post) =>
+          post.data.series &&
+          taxonomySlug(post.data.series, "series") === series.slug
+      )
+    }
+  }));
+}
+
+const { series, posts } = Astro.props;
+---
+
+<BaseLayout title={`系列：${series.name}`} description={`${series.name}系列文章。`}>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Series</span>
+      <h1>{series.name}</h1>
+      <p>{posts.length} 篇系列文章。</p>
+    </div>
+  </header>
+  <PostTimeline posts={posts} />
+</BaseLayout>

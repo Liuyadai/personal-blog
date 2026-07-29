@@ -1,0 +1,57 @@
+---
+import type { BlogEntry } from "../types/blog";
+import { getPostSlug } from "../lib/posts";
+
+interface Props {
+  previous?: BlogEntry;
+  next?: BlogEntry;
+}
+
+const { previous, next } = Astro.props;
+---
+
+{(previous || next) && (
+  <nav class="post-navigation" aria-label="相邻文章">
+    {previous ? (
+      <a href={`/posts/${getPostSlug(previous)}/`}>
+        <span>上一篇</span>
+        <strong>{previous.data.title}</strong>
+      </a>
+    ) : <span></span>}
+    {next && (
+      <a class="next" href={`/posts/${getPostSlug(next)}/`}>
+        <span>下一篇</span>
+        <strong>{next.data.title}</strong>
+      </a>
+    )}
+  </nav>
+)}
+
+<style>
+  .post-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a.next {
+    text-align: right;
+  }
+
+  a span {
+    display: block;
+    color: var(--text-faint);
+    font-size: 0.72rem;
+  }
+
+  a strong {
+    font: 500 0.92rem var(--font-reading);
+  }
+</style>

@@ -1,0 +1,2 @@
+# 修改文章 slug 时，在下方添加永久重定向：
+# /posts/old-slug/  /posts/new-slug/  301

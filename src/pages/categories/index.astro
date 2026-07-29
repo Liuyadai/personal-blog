@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CATEGORIES, taxonomySlug } from "../../config/taxonomy";
+import { getAllTags, getPublishedPosts } from "../../lib/posts";
+
+const posts = getPublishedPosts(await getCollection("blog"));
+const categories = CATEGORIES.map((category) => ({
+  ...category,
+  count: posts.filter((post) => post.data.category === category.name).length
+}));
+const tags = getAllTags(posts);
+---
+
+<BaseLayout title="分类与标签" description="按照主题查找文章。">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Topics</span>
+      <h1>分类与标签</h1>
+      <p>分类描述主要归属，标签连接不同主题。</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>分类</h2>
+    <div class="category-grid">
+      {categories.map((category) => (
+        <a class="taxonomy-card" href={`/categories/${category.slug}/`}>
+          <strong>{category.name}</strong>
+          <span>{category.count} 篇文章</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="tags-section">
+    <h2>标签</h2>
+    {tags.length ? (
+      <div class="tag-cloud">
+        {tags.map((tag) => (
+          <a class="pill" href={`/tags/${taxonomySlug(tag.name, "tag")}/`}>
+            {tag.name} · {tag.count}
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="muted">发布文章后，标签会自动出现在这里。</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  h2 {
+    margin: 0 0 1rem;
+    font: 500 1.25rem var(--font-reading);
+  }
+
+  .tags-section {
+    margin-top: 2.5rem;
+  }
+
+  .muted {
+    color: var(--text-muted);
+  }
+</style>

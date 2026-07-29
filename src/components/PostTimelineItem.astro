@@ -1,0 +1,105 @@
+---
+import type { BlogEntry } from "../types/blog";
+import { formatTimelineDate, getPostSlug } from "../lib/posts";
+import { taxonomySlug } from "../config/taxonomy";
+
+interface Props {
+  post: BlogEntry;
+  last?: boolean;
+}
+
+const { post, last = false } = Astro.props;
+---
+
+<article class:list={["timeline-item", { last }]}>
+  <time datetime={post.data.publishedAt.toISOString()}>
+    {formatTimelineDate(post.data.publishedAt)}
+  </time>
+  <div class="track" aria-hidden="true"><span></span></div>
+  <div class="post-summary">
+    <h3><a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a></h3>
+    <p>{post.data.description}</p>
+    {post.data.tags.length > 0 && (
+      <div class="tags" aria-label="文章标签">
+        {post.data.tags.map((tag) => (
+          <a class="pill" href={`/tags/${taxonomySlug(tag, "tag")}/`}>{tag}</a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 3.7rem 1rem minmax(0, 1fr);
+    min-height: 7rem;
+  }
+
+  time {
+    padding-top: 0.08rem;
+    color: var(--text-faint);
+    font-size: 0.75rem;
+  }
+
+  .track {
+    position: relative;
+  }
+
+  .track span {
+    display: block;
+    position: relative;
+    z-index: 1;
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+
+  .track::after {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0;
+    left: 0.25rem;
+    width: 1px;
+    background: var(--border);
+    content: "";
+  }
+
+  .last .track::after {
+    display: none;
+  }
+
+  .post-summary {
+    padding-bottom: 1.75rem;
+  }
+
+  h3 {
+    margin: -0.15rem 0 0.35rem;
+    font: 500 1.08rem / 1.45 var(--font-reading);
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.65rem;
+  }
+
+  @media (max-width: 480px) {
+    .timeline-item {
+      grid-template-columns: 3.2rem 0.9rem minmax(0, 1fr);
+    }
+  }
+</style>

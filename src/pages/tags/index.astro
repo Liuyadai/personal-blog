@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllTags } from "../../lib/posts";
+
+const tags = getAllTags(await getCollection("blog"));
+---
+
+<BaseLayout title="全部标签" description="浏览全部文章标签。">
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Tags</span>
+      <h1>全部标签</h1>
+      <p>跨分类连接相近主题。</p>
+    </div>
+  </header>
+  <div class="tag-cloud">
+    {tags.map((tag) => (
+      <a class="pill" href={`/tags/${tag.slug}/`}>{tag.name} · {tag.count}</a>
+    ))}
+  </div>
+</BaseLayout>
