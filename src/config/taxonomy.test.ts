@@ -23,11 +23,22 @@ describe("taxonomy configuration", () => {
   it("creates stable ASCII slugs for Chinese labels", () => {
     expect(taxonomySlug("博客", "tag")).toMatch(/^tag-[a-z0-9]+$/);
     expect(taxonomySlug("博客", "tag")).toBe(taxonomySlug("博客", "tag"));
-    expect(taxonomySlug("Astro", "tag")).toBe("astro");
+    expect(taxonomySlug("Astro", "tag")).toMatch(/^astro-[a-z0-9]+$/);
   });
 
   it("does not collapse distinct punctuation-bearing labels", () => {
     expect(taxonomySlug("C++", "tag")).not.toBe(taxonomySlug("C#", "tag"));
-    expect(taxonomySlug("hello world", "tag")).toBe("hello-world");
+  });
+
+  it("does not collapse spacing, hyphen, or case variants", () => {
+    const variants = [
+      "machine learning",
+      "machine-learning",
+      "machine--learning",
+      "Machine-Learning"
+    ].map((label) => taxonomySlug(label, "tag"));
+
+    expect(new Set(variants).size).toBe(variants.length);
+    expect(taxonomySlug("Astro", "tag")).not.toBe(taxonomySlug("astro", "tag"));
   });
 });

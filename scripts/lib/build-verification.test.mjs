@@ -5,6 +5,7 @@ const parseRedirects = helpers.parseRedirects ?? (() => []);
 const validateRedirects = helpers.validateRedirects ?? (() => []);
 const validatePagefindMarkers = helpers.validatePagefindMarkers ?? (() => []);
 const articleRouteFromFile = helpers.articleRouteFromFile ?? (() => "");
+const validateDraftArtifacts = helpers.validateDraftArtifacts ?? (() => []);
 
 describe("redirect build verification", () => {
   it("parses non-comment redirect rules with line numbers", () => {
@@ -79,5 +80,29 @@ describe("Pagefind build verification", () => {
       url: "/posts/database/mysql/partition-table2/",
       artifact: "posts/database/mysql/partition-table2/index.html"
     });
+  });
+});
+
+describe("draft build verification", () => {
+  it("ignores matching title text when the draft route artifact is absent", () => {
+    const draftRoutes = [{
+      title: "MySQL",
+      url: "/posts/mysql-draft/",
+      artifact: "posts/mysql-draft/index.html"
+    }];
+
+    expect(validateDraftArtifacts(draftRoutes, new Set(["index.html"]))).toEqual([]);
+  });
+
+  it("rejects a generated artifact for a draft route", () => {
+    const draftRoutes = [{
+      title: "草稿",
+      url: "/posts/draft/",
+      artifact: "posts/draft/index.html"
+    }];
+
+    expect(
+      validateDraftArtifacts(draftRoutes, new Set(["posts/draft/index.html"]))
+    ).toEqual(["草稿生成了公开页面：/posts/draft/"]);
   });
 });

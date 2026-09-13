@@ -4,6 +4,7 @@ import YAML from "yaml";
 import {
   articleRouteFromFile,
   parseRedirects,
+  validateDraftArtifacts,
   validatePagefindMarkers,
   validateRedirects
 } from "./lib/build-verification.mjs";
@@ -58,15 +59,12 @@ const artifactFiles = await findFiles(dist, /./);
 const artifacts = new Set(
   artifactFiles.map((file) => path.relative(dist, file).replace(/\\/g, "/"))
 );
-const publicText = (
-  await Promise.all(publicFiles.map((file) => readFile(file, "utf8")))
-).join("\n");
-
 const articleFiles = await findFiles(
   path.join(root, "src", "content", "blog"),
   /^index\.(?:md|mdx)$/
 );
 const publishedArticleUrls = new Set();
+const draftRoutes = [];
 for (const file of articleFiles) {
   const source = await readFile(file, "utf8");
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -79,12 +77,7 @@ for (const file of articleFiles) {
   const articleOutput = path.join(dist, route.artifact);
 
   if (data.draft === true) {
-    if (publicText.includes(data.title)) {
-      failures.push(`草稿标题出现在公开构建结果中：${data.title}`);
-    }
-    if (await exists(articleOutput)) {
-      failures.push(`草稿生成了公开页面：${route.url}`);
-    }
+    draftRoutes.push({ ...route, title: data.title });
   } else {
     publishedArticleUrls.add(route.url);
     if (!(await exists(articleOutput))) {
@@ -92,6 +85,7 @@ for (const file of articleFiles) {
     }
   }
 }
+failures.push(...validateDraftArtifacts(draftRoutes, artifacts));
 
 const htmlPages = new Map();
 for (const file of publicFiles.filter((item) => item.endsWith(".html"))) {

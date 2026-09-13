@@ -26,14 +26,15 @@ export function getCategorySlug(name: string) {
 }
 
 export function taxonomySlug(value: string, prefix = "topic") {
-  const normalized = value.normalize("NFKC").toLowerCase().trim();
+  const normalized = value.normalize("NFKC").trim();
   const ascii = normalized
     .normalize("NFKD")
+    .toLowerCase()
     .replace(/['"]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-  if (ascii && /^[a-z0-9]+(?:[ -]+[a-z0-9]+)*$/.test(normalized)) {
+  if (ascii && normalized === ascii) {
     return ascii;
   }
 

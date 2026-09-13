@@ -70,3 +70,9 @@ export function articleRouteFromFile(contentRoot, filePath) {
     artifact: `posts/${slug}/index.html`
   };
 }
+
+export function validateDraftArtifacts(draftRoutes, artifacts) {
+  return draftRoutes
+    .filter((route) => artifacts.has(route.artifact))
+    .map((route) => `草稿生成了公开页面：${route.url}`);
+}

@@ -1,12 +1,10 @@
-import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import {
-  buildPostTemplate,
-  normalizeArticlePath,
-  resolveArticleDirectory
+  normalizeArticlePath
 } from "./lib/post-template.mjs";
+import { createArticleDraft } from "./lib/post-files.mjs";
 
 const [, , titleArgument, slugArgument] = process.argv;
 const prompt = createInterface({ input, output });
@@ -22,18 +20,11 @@ try {
   }
 
   const contentRoot = path.join(process.cwd(), "src", "content", "blog");
-  const articleDirectory = resolveArticleDirectory(contentRoot, articlePath);
-  const articleFilePath = path.join(articleDirectory, "index.md");
-
-  try {
-    await access(articleDirectory);
-    throw new Error(`文章目录已经存在：${articleDirectory}`);
-  } catch (error) {
-    if (error?.code !== "ENOENT") throw error;
-  }
-
-  await mkdir(articleDirectory, { recursive: true });
-  await writeFile(articleFilePath, buildPostTemplate({ title }), "utf8");
+  const { filePath: articleFilePath } = await createArticleDraft({
+    contentRoot,
+    articlePath,
+    title
+  });
 
   console.log(`\n已创建草稿：${articleFilePath}`);
   console.log("下一步：填写 description、category 和正文，然后运行 npm run dev 预览。");
