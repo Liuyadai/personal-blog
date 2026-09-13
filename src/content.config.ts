@@ -2,10 +2,16 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { CATEGORY_NAMES } from "./config/taxonomy";
+import { isValidCalendarDate } from "../scripts/lib/content-rules.mjs";
+
+const requiredDate = z
+  .string()
+  .refine(isValidCalendarDate, "日期必须是有效的 YYYY-MM-DD")
+  .transform((value) => new Date(`${value}T00:00:00.000Z`));
 
 const optionalDate = z.preprocess(
   (value) => (value === null || value === "" ? undefined : value),
-  z.coerce.date().optional()
+  requiredDate.optional()
 );
 
 const optionalText = z.preprocess(
@@ -22,7 +28,7 @@ const blog = defineCollection({
     .object({
       title: z.string().trim().min(1, "title 不能为空"),
       description: z.string().trim().min(1, "description 不能为空"),
-      publishedAt: z.coerce.date(),
+      publishedAt: requiredDate,
       updatedAt: optionalDate,
       category: z.enum(CATEGORY_NAMES),
       tags: z.array(z.string().trim().min(1)).default([]),

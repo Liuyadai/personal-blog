@@ -1,7 +1,7 @@
 ---
 title: "你好，博客"
 description: "这是一篇随项目提供的草稿，用来熟悉写作和发布流程。"
-publishedAt: 2026-07-29
+publishedAt: "2026-07-29"
 updatedAt:
 category: "思考随笔"
 tags: ["博客"]

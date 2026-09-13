@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../config/site";
+import { isNavActive } from "../lib/navigation";
 import ThemeToggle from "./ThemeToggle.astro";
 
 interface Props {
@@ -20,11 +21,19 @@ const { currentPath } = Astro.props;
   </div>
   <nav id="mobile-nav" aria-label="移动端导航" hidden>
     {SITE.nav.map((item) => (
-      <a class:list={{ active: currentPath.startsWith(item.href) }} href={item.href}>
+      <a
+        class:list={{ active: isNavActive(currentPath, item.href) }}
+        href={item.href}
+        aria-current={isNavActive(currentPath, item.href) ? "page" : undefined}
+      >
         {item.label}
       </a>
     ))}
-    <a href="/search/">搜索</a>
+    <a
+      class:list={{ active: isNavActive(currentPath, "/search/") }}
+      href="/search/"
+      aria-current={isNavActive(currentPath, "/search/") ? "page" : undefined}
+    >搜索</a>
   </nav>
 </header>
 

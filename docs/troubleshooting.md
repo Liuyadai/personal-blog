@@ -55,8 +55,8 @@ category: "技术实践"
 正确格式：
 
 ```yaml
-publishedAt: 2026-07-29
-updatedAt: 2026-08-03
+publishedAt: "2026-07-29"
+updatedAt: "2026-08-03"
 ```
 
 不用斜杠，也不要写中文年月日。

@@ -62,6 +62,8 @@ scripts/                创建文章和发布检查脚本
 docs/                   使用说明
 ```
 
+创建文章时可以输入多级路径，例如 `database/mysql/partition-table`，它会生成 `/posts/database/mysql/partition-table/`。
+
 ## 发布状态
 
 文章顶部的：

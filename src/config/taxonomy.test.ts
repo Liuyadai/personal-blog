@@ -25,4 +25,9 @@ describe("taxonomy configuration", () => {
     expect(taxonomySlug("博客", "tag")).toBe(taxonomySlug("博客", "tag"));
     expect(taxonomySlug("Astro", "tag")).toBe("astro");
   });
+
+  it("does not collapse distinct punctuation-bearing labels", () => {
+    expect(taxonomySlug("C++", "tag")).not.toBe(taxonomySlug("C#", "tag"));
+    expect(taxonomySlug("hello world", "tag")).toBe("hello-world");
+  });
 });

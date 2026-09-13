@@ -3,11 +3,11 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostTimeline from "../../components/PostTimeline.astro";
 import { CATEGORIES } from "../../config/taxonomy";
-import { getPublishedPosts } from "../../lib/posts";
+import { getPublishedCategories, getPublishedPosts } from "../../lib/posts";
 
 export async function getStaticPaths() {
   const posts = getPublishedPosts(await getCollection("blog"));
-  return CATEGORIES.map((category) => ({
+  return getPublishedCategories(posts, CATEGORIES).map((category) => ({
     params: { category: category.slug },
     props: {
       category,

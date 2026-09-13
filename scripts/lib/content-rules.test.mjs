@@ -26,6 +26,15 @@ describe("content rules", () => {
     ).toEqual([]);
   });
 
+  it("accepts a kebab-case multi-level article path", () => {
+    expect(
+      validateFrontmatter(valid(), {
+        slug: "database/mysql/partition-table2",
+        categories
+      })
+    ).toEqual([]);
+  });
+
   it("reports missing metadata with a field name", () => {
     const issues = validateFrontmatter(valid({ description: "" }), {
       slug: "my-post",
@@ -48,6 +57,33 @@ describe("content rules", () => {
     expect(issues.map(({ field }) => field)).toEqual(
       expect.arrayContaining(["publishedAt", "category", "tags"])
     );
+  });
+
+  it.each([
+    ["publishedAt", "2026-02-30"],
+    ["publishedAt", "2025-02-29"],
+    ["updatedAt", "2026-04-31"]
+  ])("rejects an impossible calendar date in %s: %s", (field, value) => {
+    const issues = validateFrontmatter(valid({ [field]: value }), {
+      slug: "my-post",
+      categories
+    });
+
+    expect(issues).toContainEqual(
+      expect.objectContaining({
+        field,
+        reason: expect.stringContaining("格式不正确")
+      })
+    );
+  });
+
+  it("accepts February 29 in a leap year", () => {
+    expect(
+      validateFrontmatter(valid({ publishedAt: "2024-02-29" }), {
+        slug: "my-post",
+        categories
+      })
+    ).toEqual([]);
   });
 
   it("extracts only relative local references", () => {

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist",
+    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist --root-selector [data-pagefind-body]",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",

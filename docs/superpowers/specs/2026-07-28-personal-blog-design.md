@@ -99,7 +99,7 @@ personal-blog/
 ---
 title: "从零搭建我的私人博客"
 description: "记录博客的技术选型、内容模型与部署过程"
-publishedAt: 2026-07-28
+publishedAt: "2026-07-28"
 updatedAt:
 category: "技术实践"
 tags: ["Astro", "博客"]
@@ -219,7 +219,7 @@ npm run new-post
 ---
 title: "文章标题"
 description: ""
-publishedAt: 2026-07-28
+publishedAt: "2026-07-28"
 updatedAt:
 category: ""
 tags: []

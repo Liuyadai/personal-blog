@@ -54,7 +54,7 @@ const latestDays = daysSinceLatestPost(allPosts);
     <div class="site-shell">
       <Sidebar currentPath={Astro.url.pathname} latestDays={latestDays} />
       <MobileHeader currentPath={Astro.url.pathname} />
-      <main id="main-content" class="page-content" data-pagefind-body>
+      <main id="main-content" class="page-content">
         <div class="page-inner">
           <slot />
           <footer class="footer">

@@ -58,7 +58,9 @@ for (const filePath of await findArticles(contentRoot)) {
     continue;
   }
 
-  const slug = path.basename(path.dirname(filePath));
+  const slug = path
+    .relative(contentRoot, path.dirname(filePath))
+    .replace(/\\/g, "/");
   const issues = validateFrontmatter(article.data, { slug, categories });
   for (const reference of extractLocalReferences(article.markdown)) {
     const resolved = path.resolve(path.dirname(filePath), reference);

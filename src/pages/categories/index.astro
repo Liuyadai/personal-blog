@@ -2,10 +2,14 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { CATEGORIES, taxonomySlug } from "../../config/taxonomy";
-import { getAllTags, getPublishedPosts } from "../../lib/posts";
+import {
+  getAllTags,
+  getPublishedCategories,
+  getPublishedPosts
+} from "../../lib/posts";
 
 const posts = getPublishedPosts(await getCollection("blog"));
-const categories = CATEGORIES.map((category) => ({
+const categories = getPublishedCategories(posts, CATEGORIES).map((category) => ({
   ...category,
   count: posts.filter((post) => post.data.category === category.name).length
 }));

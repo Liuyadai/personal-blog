@@ -33,6 +33,8 @@ export function mountPagefind({
   container: SearchContainer;
 }) {
   if (!PagefindUI) {
+    container.innerHTML =
+      '<p class="search-error">搜索暂时不可用，请稍后刷新页面重试。</p>';
     container.classList.add("search-unavailable");
     return false;
   }

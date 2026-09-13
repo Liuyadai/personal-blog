@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../config/site";
+import { isNavActive } from "../lib/navigation";
 import ThemeToggle from "./ThemeToggle.astro";
 
 interface Props {
@@ -8,8 +9,6 @@ interface Props {
 }
 
 const { currentPath, latestDays } = Astro.props;
-const isActive = (href: string) =>
-  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 ---
 
 <aside class="sidebar">
@@ -24,12 +23,16 @@ const isActive = (href: string) =>
       <ul>
         {SITE.nav.map((item) => (
           <li>
-            <a class:list={{ active: isActive(item.href) }} href={item.href}>
+            <a
+              class:list={{ active: isNavActive(currentPath, item.href) }}
+              href={item.href}
+              aria-current={isNavActive(currentPath, item.href) ? "page" : undefined}
+            >
               <span aria-hidden="true"></span>{item.label}
             </a>
           </li>
         ))}
-        <li><a class:list={{ active: currentPath.startsWith("/search") }} href="/search/">搜索</a></li>
+        <li><a class:list={{ active: currentPath.startsWith("/search") }} href="/search/" aria-current={currentPath.startsWith("/search") ? "page" : undefined}>搜索</a></li>
       </ul>
     </nav>
   </div>

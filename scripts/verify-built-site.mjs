@@ -1,6 +1,12 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
+import {
+  articleRouteFromFile,
+  parseRedirects,
+  validatePagefindMarkers,
+  validateRedirects
+} from "./lib/build-verification.mjs";
 
 const root = process.cwd();
 const dist = path.join(root, "dist");
@@ -48,6 +54,10 @@ async function findFiles(directory, pattern) {
 }
 
 const publicFiles = await findFiles(dist, /\.(?:html|xml)$/);
+const artifactFiles = await findFiles(dist, /./);
+const artifacts = new Set(
+  artifactFiles.map((file) => path.relative(dist, file).replace(/\\/g, "/"))
+);
 const publicText = (
   await Promise.all(publicFiles.map((file) => readFile(file, "utf8")))
 ).join("\n");
@@ -56,25 +66,47 @@ const articleFiles = await findFiles(
   path.join(root, "src", "content", "blog"),
   /^index\.(?:md|mdx)$/
 );
+const publishedArticleUrls = new Set();
 for (const file of articleFiles) {
   const source = await readFile(file, "utf8");
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) continue;
   const data = YAML.parse(match[1]);
-  const slug = path.basename(path.dirname(file));
-  const articleOutput = path.join(dist, "posts", slug, "index.html");
+  const route = articleRouteFromFile(
+    path.join(root, "src", "content", "blog"),
+    file
+  );
+  const articleOutput = path.join(dist, route.artifact);
 
   if (data.draft === true) {
     if (publicText.includes(data.title)) {
       failures.push(`草稿标题出现在公开构建结果中：${data.title}`);
     }
     if (await exists(articleOutput)) {
-      failures.push(`草稿生成了公开页面：/posts/${slug}/`);
+      failures.push(`草稿生成了公开页面：${route.url}`);
     }
-  } else if (!(await exists(articleOutput))) {
-    failures.push(`正式文章没有生成页面：/posts/${slug}/`);
+  } else {
+    publishedArticleUrls.add(route.url);
+    if (!(await exists(articleOutput))) {
+      failures.push(`正式文章没有生成页面：${route.url}`);
+    }
   }
 }
+
+const htmlPages = new Map();
+for (const file of publicFiles.filter((item) => item.endsWith(".html"))) {
+  const relative = path.relative(dist, file).replace(/\\/g, "/");
+  const url = relative === "index.html"
+    ? "/"
+    : relative === "404.html"
+      ? "/404.html"
+      : `/${relative.replace(/index\.html$/, "")}`;
+  htmlPages.set(url, await readFile(file, "utf8"));
+}
+failures.push(...validatePagefindMarkers(htmlPages, publishedArticleUrls));
+
+const redirectsSource = await readFile(path.join(root, "public", "_redirects"), "utf8");
+failures.push(...validateRedirects(parseRedirects(redirectsSource), artifacts));
 
 function routeToFile(urlPath) {
   const clean = urlPath.split(/[?#]/)[0];

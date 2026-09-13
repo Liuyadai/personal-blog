@@ -1,6 +1,6 @@
 # 本地验收记录
 
-- 日期：2026-07-29
+- 日期：2026-09-13
 - 环境：Windows、Node.js 22.14、Chrome Headless
 
 ## 自动检查
@@ -15,7 +15,7 @@ npm.cmd run verify
 
 - 内容元数据和本地引用检查通过。
 - Astro/TypeScript：0 errors、0 warnings、0 hints。
-- Vitest：4 个测试文件、18 项测试全部通过。
+- Vitest 全部通过；最新数量以 `npm.cmd run verify` 输出为准。
 - Astro 静态构建成功。
 - Pagefind 中文索引生成成功。
 - 草稿泄漏、关键页面和站内链接检查通过。
@@ -41,9 +41,16 @@ npm.cmd run verify
 - 文章目录在至少三个二、三级标题时出现。
 - 页面使用系统字体，不依赖外部字体服务。
 
-## 尚未执行
+## Lighthouse
 
-Lighthouse 分数需在正式域名部署后再次测量。当前本地验收已覆盖响应式、基本无障碍结构、控制台错误和构建完整性；正式上线目标仍为首页与文章页的性能、无障碍分数均不低于 90。
+使用与 Cloudflare 相同的静态构建，通过 `astro preview` 和 Chrome Headless 进行 Lighthouse 12.8.2 验收：
+
+| 页面 | 性能 | 无障碍 |
+|---|---:|---:|
+| 首页 | 100 | 95 |
+| `database-mysql-partition-table` 文章页 | 100 | 95 |
+
+两个页面均达到不低于 90 的验收目标。Lighthouse 生成报告后在 Windows 清理临时 Chrome 配置时遇到文件占用，但 JSON 报告完整、无运行时错误，分数有效。
 
 ## Cloudflare 上线验收
 

@@ -26,22 +26,22 @@ export function getCategorySlug(name: string) {
 }
 
 export function taxonomySlug(value: string, prefix = "topic") {
-  const ascii = value
+  const normalized = value.normalize("NFKC").toLowerCase().trim();
+  const ascii = normalized
     .normalize("NFKD")
-    .toLowerCase()
-    .trim()
     .replace(/['"]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-  if (ascii) {
+  if (ascii && /^[a-z0-9]+(?:[ -]+[a-z0-9]+)*$/.test(normalized)) {
     return ascii;
   }
 
   let hash = 2166136261;
-  for (const character of value) {
+  for (const character of normalized) {
     hash ^= character.codePointAt(0) ?? 0;
     hash = Math.imul(hash, 16777619);
   }
-  return `${prefix}-${(hash >>> 0).toString(36)}`;
+  const suffix = (hash >>> 0).toString(36);
+  return ascii ? `${ascii}-${suffix}` : `${prefix}-${suffix}`;
 }

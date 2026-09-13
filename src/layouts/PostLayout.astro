@@ -26,7 +26,7 @@ const { post, headings, previous, next } = Astro.props;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article>
+  <article data-pagefind-body>
     <header class="post-header">
       <span class="eyebrow">{post.data.category}</span>
       <h1>{post.data.title}</h1>

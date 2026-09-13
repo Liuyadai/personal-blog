@@ -15,4 +15,15 @@ describe("Pagefind search bootstrap", () => {
       expect.objectContaining({ element: "#search", showSubResults: true })
     );
   });
+
+  it("replaces the loading message when PagefindUI is unavailable", async () => {
+    const { mountPagefind } = await import("../../src/lib/search-bootstrap.ts");
+    const container = { innerHTML: "正在加载", classList: { add: vi.fn() } };
+
+    const mounted = mountPagefind({ container });
+
+    expect(mounted).toBe(false);
+    expect(container.innerHTML).toContain("搜索暂时不可用");
+    expect(container.classList.add).toHaveBeenCalledWith("search-unavailable");
+  });
 });

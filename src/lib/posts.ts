@@ -2,6 +2,23 @@ import type { BlogEntry, TimelineGroup } from "../types/blog";
 import { SITE } from "../config/site";
 import { taxonomySlug } from "../config/taxonomy";
 
+const calendarDateFormatter = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  timeZone: SITE.timezone
+});
+
+function calendarDayNumber(date: Date) {
+  const parts = Object.fromEntries(
+    calendarDateFormatter
+      .formatToParts(date)
+      .filter(({ type }) => type === "year" || type === "month" || type === "day")
+      .map(({ type, value }) => [type, Number(value)])
+  );
+  return Date.UTC(parts.year, parts.month - 1, parts.day) / 86_400_000;
+}
+
 export function getPostSlug(post: Pick<BlogEntry, "id">) {
   return post.id.replace(/\/index$/, "").replace(/\\/g, "/");
 }
@@ -14,6 +31,16 @@ export function getPublishedPosts(posts: BlogEntry[]) {
         right.data.publishedAt.getTime() - left.data.publishedAt.getTime();
       return dateDifference || getPostSlug(left).localeCompare(getPostSlug(right));
     });
+}
+
+export function getPublishedCategories<T extends { name: string }>(
+  posts: BlogEntry[],
+  categories: T[]
+) {
+  const publishedCategoryNames = new Set(
+    getPublishedPosts(posts).map((post) => post.data.category)
+  );
+  return categories.filter((category) => publishedCategoryNames.has(category.name));
 }
 
 export function getHomePosts(posts: BlogEntry[]) {
@@ -104,11 +131,7 @@ export function daysSinceLatestPost(
   const latest = getPublishedPosts(posts)[0];
   if (!latest) return null;
 
-  const start = Date.UTC(
-    latest.data.publishedAt.getUTCFullYear(),
-    latest.data.publishedAt.getUTCMonth(),
-    latest.data.publishedAt.getUTCDate()
-  );
-  const end = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  return Math.max(0, Math.floor((end - start) / 86_400_000));
+  const start = calendarDayNumber(latest.data.publishedAt);
+  const end = calendarDayNumber(now);
+  return Math.max(0, end - start);
 }

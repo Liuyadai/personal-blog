@@ -1,5 +1,33 @@
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+const ARTICLE_PATH_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/;
+
+export function isValidCalendarDate(value) {
+  if (typeof value !== "string") return false;
+  const match = DATE_PATTERN.exec(value);
+  if (!match) return false;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [
+    31,
+    leapYear ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ];
+  return (
+    month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth[month - 1]
+  );
+}
 
 function issue(field, reason, suggestion) {
   return { field, reason, suggestion };
@@ -14,45 +42,45 @@ export function validateFrontmatter(data, { slug, categories }) {
     }
   }
 
-  if (!SLUG_PATTERN.test(slug)) {
+  if (!ARTICLE_PATH_PATTERN.test(slug)) {
     issues.push(
       issue(
         "slug",
-        "文章目录名不是 kebab-case。",
-        "请使用小写英文字母、数字和单个连字符。"
+        "文章路径不是有效的 kebab-case 多级路径。",
+        "请让每一级都只使用小写英文字母、数字和单个连字符，例如 database/mysql/partition-table2。"
       )
     );
   }
 
   if (
     data.publishedAt !== undefined &&
-    !DATE_PATTERN.test(String(data.publishedAt))
+    !isValidCalendarDate(data.publishedAt)
   ) {
     issues.push(
       issue(
         "publishedAt",
         "发布日期格式不正确。",
-        "请使用 YYYY-MM-DD，例如 2026-07-29。"
+        '请使用带引号的 YYYY-MM-DD，例如 "2026-07-29"。'
       )
     );
   }
 
   if (
     data.updatedAt &&
-    !DATE_PATTERN.test(String(data.updatedAt))
+    !isValidCalendarDate(data.updatedAt)
   ) {
     issues.push(
       issue(
         "updatedAt",
         "更新日期格式不正确。",
-        "请使用 YYYY-MM-DD，或将该字段留空。"
+        '请使用带引号的 YYYY-MM-DD，例如 "2026-07-29"，或将该字段留空。'
       )
     );
   }
 
   if (
-    DATE_PATTERN.test(String(data.publishedAt)) &&
-    DATE_PATTERN.test(String(data.updatedAt)) &&
+    isValidCalendarDate(data.publishedAt) &&
+    isValidCalendarDate(data.updatedAt) &&
     String(data.updatedAt) < String(data.publishedAt)
   ) {
     issues.push(
