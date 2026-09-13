@@ -1,7 +1,7 @@
 export const SITE = {
   title: "所见所得",
   description: "记录技术、阅读，以及生活中值得被再次想起的事。",
-  author: "博客作者",
+  author: "孟浪",
   language: "zh-CN",
   locale: "zh-CN",
   timezone: "Asia/Shanghai",
