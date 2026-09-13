@@ -44,3 +44,12 @@ npm.cmd run verify
 ## 尚未执行
 
 Lighthouse 分数需在正式域名部署后再次测量。当前本地验收已覆盖响应式、基本无障碍结构、控制台错误和构建完整性；正式上线目标仍为首页与文章页的性能、无障碍分数均不低于 90。
+
+## Cloudflare 上线验收
+
+- 线上地址：<https://personal-blog-4xd.pages.dev>
+- Cloudflare Pages 生产部署成功。
+- 首页 HTTPS、canonical 和 Open Graph URL 正确。
+- RSS 与 sitemap 使用实际 Pages 域名。
+- Pagefind 搜索输入框在线上环境正常加载。
+- 示例文章仍为 `draft: true`，未生成公开文章页。

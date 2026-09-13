@@ -28,10 +28,10 @@ git push -u origin main
 ## 2. 连接 Cloudflare Pages
 
 1. 登录 Cloudflare Dashboard。
-2. 打开 `Workers & Pages`。
-3. 点击 `Create application`。
-4. 选择 `Pages` 和 `Connect to Git`。
-5. 选择 GitHub，并完成授权。
+2. 在左侧依次打开 `Build` → `Compute`。
+3. 点击 `Create app`。
+4. 在创建方式页面底部点击 `Continue to Pages`，不要使用上方默认的 Workers 创建入口。
+5. 选择 `Connect to Git`，再选择 GitHub 并完成授权。
 6. 授权时只选择 `personal-blog` 仓库。
 7. 返回 Cloudflare，选择该仓库并开始设置。
 
@@ -137,6 +137,14 @@ git push
 ## 6. 构建失败时
 
 进入失败部署的 Build logs，找到第一条错误。不要删除项目重新开始；上一版成功站点仍会在线。
+
+如果失败发生在 `initialize`，日志只有：
+
+```text
+Failed: unable to submit build job
+```
+
+并且 `clone repo`、`build`、`deploy` 都没有开始，说明 Cloudflare 尚未提交构建任务，通常不是代码错误。先点击 `Retry deployment` 重试同一次部署，不要修改构建设置。
 
 修复本地代码后先运行：
 
