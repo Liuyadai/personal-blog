@@ -5,7 +5,7 @@ export const SITE = {
   language: "zh-CN",
   locale: "zh-CN",
   timezone: "Asia/Shanghai",
-  url: "https://example.com",
+  url: "https://personal-blog-4xd.pages.dev",
   homePostLimit: 20,
   nav: [
     { href: "/", label: "最近记录" },

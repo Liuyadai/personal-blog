@@ -2,6 +2,8 @@
 
 一个使用 Astro、Markdown、GitHub 和 Cloudflare Pages 构建的个人博客。文章和图片保存在本地文件与 Git 历史中，不依赖数据库。
 
+线上地址：<https://personal-blog-4xd.pages.dev>
+
 ## 第一次运行
 
 需要：
