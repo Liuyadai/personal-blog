@@ -34,12 +34,8 @@ export function taxonomySlug(value: string, prefix = "topic") {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-  if (ascii && normalized === ascii) {
-    return ascii;
-  }
-
   const suffix = [...new TextEncoder().encode(value.trim())]
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
-  return ascii ? `${ascii}-${suffix}` : `${prefix}-${suffix}`;
+  return `${ascii || prefix}-${suffix}`;
 }

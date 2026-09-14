@@ -47,4 +47,10 @@ describe("taxonomy configuration", () => {
       taxonomySlug("mAcHINe--LEARnINg", "tag")
     );
   });
+
+  it("does not collide between encoded and plain-looking labels", () => {
+    expect(taxonomySlug("foo+", "tag")).not.toBe(
+      taxonomySlug("foo-666f6f2b", "tag")
+    );
+  });
 });
