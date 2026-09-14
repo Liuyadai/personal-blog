@@ -41,4 +41,10 @@ describe("taxonomy configuration", () => {
     expect(new Set(variants).size).toBe(variants.length);
     expect(taxonomySlug("Astro", "tag")).not.toBe(taxonomySlug("astro", "tag"));
   });
+
+  it("does not collapse labels that collide under a 32-bit hash", () => {
+    expect(taxonomySlug("maChiNE--leARnIng", "tag")).not.toBe(
+      taxonomySlug("mAcHINe--LEARnINg", "tag")
+    );
+  });
 });

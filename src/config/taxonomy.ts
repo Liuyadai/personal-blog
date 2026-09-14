@@ -38,11 +38,8 @@ export function taxonomySlug(value: string, prefix = "topic") {
     return ascii;
   }
 
-  let hash = 2166136261;
-  for (const character of normalized) {
-    hash ^= character.codePointAt(0) ?? 0;
-    hash = Math.imul(hash, 16777619);
-  }
-  const suffix = (hash >>> 0).toString(36);
+  const suffix = [...new TextEncoder().encode(value.trim())]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
   return ascii ? `${ascii}-${suffix}` : `${prefix}-${suffix}`;
 }
