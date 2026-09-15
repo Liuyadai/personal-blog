@@ -16,13 +16,13 @@ const visible = headings.filter(({ depth }) => depth === 2 || depth === 3);
 {visible.length >= 3 && (
   <nav class="toc" aria-label="文章目录">
     <strong>本文目录</strong>
-    <ol>
+    <ul>
       {visible.map((heading) => (
         <li class:list={{ nested: heading.depth === 3 }}>
           <a href={`#${heading.slug}`}>{heading.text}</a>
         </li>
       ))}
-    </ol>
+    </ul>
   </nav>
 )}
 
@@ -39,9 +39,10 @@ const visible = headings.filter(({ depth }) => depth === 2 || depth === 3);
     font: 500 0.92rem var(--font-reading);
   }
 
-  ol {
+  ul {
     margin: 0.7rem 0 0;
     padding-left: 1.3rem;
+    list-style: none;
   }
 
   li {
