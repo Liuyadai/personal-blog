@@ -22,7 +22,7 @@ const optionalText = z.preprocess(
 const blog = defineCollection({
   loader: glob({
     base: "./src/content/blog",
-    pattern: "**/*.{md,mdx}"
+    pattern: "**/index.{md,mdx}"
   }),
   schema: z
     .object({
